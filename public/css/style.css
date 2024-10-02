@@ -1,0 +1,328 @@
+* {
+    font-family: "Roboto";
+}
+
+body {
+    min-height: 100vh;
+    padding-bottom: 100px;
+    position: relative;
+}
+
+header {
+    background-color: #13293d;
+    border-bottom: 1px solid #cccccc00;
+}
+
+.row {
+    margin: 0;
+}
+
+.container-fluid {
+    padding: 0;
+}
+
+.btn-primary {
+    background-color: #247ba0;
+    border: 2px solid #1b98e0;
+}
+
+.btn-primary:hover {
+    background-color: #006494;
+    border-color: #1b98e0;
+}
+
+#navbar img {
+    width: 40px;
+}
+
+#navbar {
+    justify-content: space-between;
+    background-color: #13293d;
+    padding: 5px 0;
+}
+
+#navbar a {
+    font-size: 14px;
+    color: white;
+}
+
+#navbar a:hover {
+    color: #1b98e0;
+    text-decoration: none;
+}
+
+#search-container {
+    background-image: url("/img/banner4.png");
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+    padding: 50px;
+    text-align: center;
+}
+
+#search-container h1 {
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Sombra suave em preto */
+    margin-bottom: 30px;
+    font-weight: 900;
+}
+
+#search-container form {
+    width: 50%;
+    margin: 0 auto;
+}
+
+#events-container {
+    padding: 50px;
+}
+
+#events-container h2 {
+    margin-bottom: 10px;
+}
+
+#events-container .subtitle {
+    color: #757575;
+    margin-bottom: 30px;
+}
+
+#cards-container {
+    display: flex;
+}
+
+#events-container .card {
+    flex: 1 1 24%;
+    max-width: 25%;
+    border-radius: 10px;
+    padding: 0;
+    margin: 0.5%;
+}
+
+#events-container img {
+    max-height: 150px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.card .card-date {
+    font-size: 12px;
+    color: #ccc;
+}
+
+.card .card-title {
+    color: #212121;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.card-participants {
+    font-size: 14px;
+    color: #757575;
+}
+
+.msg {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    width: 100%;
+    margin-bottom: 0;
+    text-align: center;
+    padding: 10px;
+}
+
+/* create page */
+
+#event-create-container {
+    padding: 30px;
+}
+
+#event-create-container label {
+    font-weight: bold;
+}
+
+#event-create-container input,
+#event-create-container select,
+#event-create-container textarea {
+    font-size: 12px;
+}
+/* dashboard */
+.dashboard-title-container {
+    margin-bottom: 30px;
+    margin-top: 30px;
+}
+.dashboard-events-container th {
+    width: 25%;
+}
+#form {
+    display: inline-block;
+}
+/* event page */
+
+#image-container,
+#info-container {
+    margin-top: 30px;
+}
+
+#image-container img {
+    border-radius: 10px;
+}
+
+#info-container h1 {
+    font-size: 36px;
+    font-weight: 900;
+}
+
+#info-container p {
+    margin: 0;
+    font-size: 14px;
+    display: flex;
+}
+
+#info-container h3,
+#description-container h3 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#info-container ion-icon {
+    font-size: 20px;
+    color: #006494;
+    margin-right: 5px;
+}
+
+#info-container #event-submit {
+    margin: 20px 0;
+}
+
+#items-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+#items-list li {
+    display: flex;
+}
+
+#description-container {
+    margin-top: 30px;
+}
+.img-preview {
+    width: 100px;
+    margin-top: 20px;
+}
+
+/*footer */
+
+footer {
+    text-align: center;
+    background-color: #353e48;
+    color: white;
+    padding: 30px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+footer p {
+    margin-bottom: 0;
+}
+
+/* Estilo para o container principal */
+#formlogin-container,
+#formregister-container,
+#formloginforgot-container {
+    display: flex; /* Usando flexbox */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    height: 100vh; /* Altura total da tela */
+    background: rgba(
+        255,
+        255,
+        255,
+        0.1
+    ); /* Transparência para manter o background do Blade */
+    backdrop-filter: blur(10px); /* Efeito de desfoque */
+}
+
+/* Estilo para o formulário de login */
+#formlogin,
+#formloginforgot,
+#formregister {
+    background: rgba(255, 255, 255, 0.8); /* Fundo branco com transparência */
+    backdrop-filter: blur(15px); /* Efeito glassdoor */
+    border-radius: 12px; /* Bordas arredondadas */
+    padding: 30px; /* Espaçamento interno */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    max-width: 400px; /* Largura máxima do formulário */
+    width: 100%; /* Largura total */
+}
+
+/* Estilo para inputs */
+#formlogin input,
+#formregister input,
+#formloginforgot input {
+    border-radius: 8px; /* Bordas arredondadas para inputs */
+    padding: 12px; /* Espaçamento interno para inputs */
+    border: 1px solid #ddd; /* Borda cinza clara */
+    width: 100%; /* Largura total do input */
+    margin-top: 10px; /* Margem superior */
+    margin-bottom: 10px; /* Margem inferior */
+}
+
+/* Estilo para mensagens de erro e sucesso */
+.font-medium {
+    font-weight: bold; /* Fonte em negrito */
+}
+
+/* Estilo para o link de "Esqueceu a senha?" */
+a {
+    color: #247ba0; /* Cor do link */
+    text-decoration: none; /* Remove o sublinhado */
+    font-weight: bold; /* Fonte em negrito */
+}
+
+a:hover {
+    text-decoration: underline; /* Sublinha ao passar o mouse */
+}
+
+.flex.items-center {
+    align-items: center; /* Centraliza verticalmente os itens */
+}
+
+.mt-4 {
+    margin-top: 0; /* Ajuste a margem superior */
+}
+
+#login {
+    border: none; /* Sem bordas */
+    border-radius: 8px; /* Bordas arredondadas */
+    padding: 12px; /* Espaçamento interno do botão */
+    width: 100%; /* Largura total do botão */
+    color: white; /* Cor do texto do botão */
+    font-size: 16px; /* Tamanho da fonte do botão */
+    transition: background-color 0.3s ease; /* Transição suave para o botão */
+    margin-top: 20px; /* Espaçamento acima do botão */
+}
+
+/* Certifique-se de que essa classe esteja incluída */
+.checkbox-label-container {
+    display: flex; /* Usar flexbox */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Alinha verticalmente */
+    margin-top: 1rem; /* Espaçamento acima do checkbox */
+    width: 35%; /* Garante que a div ocupe a largura total disponível */
+}
+
+/* Estilo para o checkbox */
+.checkbox-label-container input[type="checkbox"] {
+    width: 20px; /* Tamanho do checkbox */
+    height: 20px; /* Tamanho do checkbox */
+    margin-right: 8px; /* Espaçamento entre o checkbox e o label */
+}
+
+/* Estilo para o label */
+.checkbox-label-container label {
+    font-size: 0.875rem; /* Tamanho da fonte do label */
+    color: #4a5568; /* Cor do texto do label */
+    cursor: pointer; /* Muda o cursor ao passar sobre o label */
+}
