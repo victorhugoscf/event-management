@@ -4,7 +4,7 @@ Bem-vindo ao **Gerenciador de Eventos**, uma aplicação web desenvolvida em **L
 
 ## Demonstração 📸
 
-![Demonstração do Gerenciador de Eventos](https://example.com/demonstracao.png)
+![Demonstração do Gerenciador de Eventos](gerenciadoreventos.jpeg)
 
 ## Recursos 🚀
 
