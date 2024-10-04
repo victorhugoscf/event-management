@@ -2,14 +2,13 @@
 
 namespace App\Models;
 
-
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-use App\Services\ImageService;
 
 class User extends Authenticatable
 {
@@ -24,10 +23,11 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-   protected $fillable = [
-    'title', 'city', 'private', 'description', 'items', 'date', 'image', 'user_id'
-];
-
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -62,20 +62,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-    
+
    
     public function events() {
         return $this->hasMany('App\Models\Event'); 
     }
     
-   
-    
-
-      public function eventsAsParticipant()
-    {
-        return $this->belongsToMany(Event::class, 'event_user'); 
+     public function eventsAsParticipant(){
+         return $this->belongsToMany('App\Models\Event', 'event_user', 'user_id', 'event_id');
     }
-
 
    
 }

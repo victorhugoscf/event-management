@@ -6,14 +6,12 @@
 <div id="event-create-container" class="col-md-6 offset-md-3">
 
     <h1>Editando {{$event -> title}}</h1>
-    <form action="{{ route('events.update', $event->id) }}" method="POST" enctype="multipart/form-data">
-
-
+    <form action="/events/update/{{$event->id}}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="form-group">
             <label for="image">Imagem do evento:</label>
-            <input type="file" id="image" name="image" class="form-control-file">
+            <input type="file" id="image" name="image" class="from-control-file">
             <img src="/img/events/{{$event->image}}" alt="{{$event->title}}" class="img-preview">
         </div>
 
@@ -30,20 +28,8 @@
         </div>
         <div class="form-group">
             <label for="date">Data do evento:</label>
-            @php
-            use Carbon\Carbon;
 
-            // Inicializa $formattedDate com um valor padrão (string vazia)
-            $formattedDate = '';
-
-            // Verifica se o evento possui uma data válida
-            if (!empty($event->date)) {
-            $formattedDate = is_string($event->date) ? Carbon::parse($event->date)->format('Y-m-d') :
-            $event->date->format('Y-m-d');
-            }
-            @endphp
-
-            <input type="date" class="form-control" name="date" id="date" value="{{ $formattedDate }}"
+            <input type="date" class="form-control" name="date" id="date" value="{{ $event->date->format('Y-m-d') }}"
                 placeholder="Data do evento">
         </div>
         <div class="form-group">
@@ -80,7 +66,7 @@
 
 
 
-            <input type="submit" class="btn btn-primary" value="Editar Evento">
+            <input type="submit" class="btn btn-primary" value="Criar Evento">
     </form>
 
 </div>
