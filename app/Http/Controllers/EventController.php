@@ -1,114 +1,143 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
-use App\Services\EventService;
-use Illuminate\Support\Facades\Auth; 
+use App\Models\Event;
+
+
+use Illuminate\Support\Facades\Auth; // Importação correta
 use Illuminate\Http\Request;
-use App\Services\ImageUploadService;
 
 
 class EventController extends Controller
 {
-    protected $eventService;
-    protected $imageUploadService;
-
-    public function __construct(EventService $eventService, ImageUploadService $imageUploadService)
-    {
-         $this->eventService = $eventService;
-        $this->imageUploadService = $imageUploadService;
-    }
-
     public function index()
     {
         $search = request('search');
-        $events = $this->eventService->getEvents($search);
+        if ($search) {
+            $events = Event::where('title', 'like', '%' . $search . '%')->get();
+        } else {
+            $events = Event::all();
+        }
 
         return view('welcome', ['events' => $events, 'search' => $search]);
     }
 
-     public function create()
+    public function create()
     {
-        $this->eventService->validateUserAuthentication(); // Valida a autenticação do usuário
         return view('events.create');
     }
 
- public function store(Request $request)
+    public function store(Request $request)
     {
-        $this->eventService->validateUserAuthentication(); // Valida a autenticação do usuário
-        $validatedData = $this->eventService->validateEventData($request->all()); // Valida os dados do evento
+        // Validação dos dados
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'private' => 'required|boolean',
+            'description' => 'required|string',
+            'items' => 'required|array',
+            'date' => 'required|date',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-        // Tente fazer o upload da imagem
+        $event = new Event;
+
+        $event->title = $request->title;
+        $event->city = $request->city;
+        $event->private = $request->private;
+        $event->description = $request->description;
+        $event->items = json_encode($request->items);
+
+
+        $event->date = $request->date;
+
+        // Lógica para o upload da imagem
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $validatedData['image'] = $this->imageUploadService->upload($request->file('image'));
+            $requestImage = $request->image;
+            $extension = $requestImage->extension();
+            $imageName = md5($requestImage->getClientOriginalName() . strtotime("now")) . "." . $extension;
+
+            $request->image->move(public_path('img/events'), $imageName);
+            $event->image = $imageName;
         }
 
-        // Chama o método do serviço para criar o evento
-        $event = $this->eventService->createEvent($validatedData);
+        // Verifica se o usuário está autenticado
+        if (Auth::check()) { // Usando Auth::check()
+            $user = Auth::user(); // Usando Auth::user()
+            $event->user_id = $user->id;
+            $event->save();
 
-        return redirect()->route('events.index')->with('success', 'Evento criado com sucesso!');
+            return redirect()->route('events.index')->with('success', 'Evento criado com sucesso!');
+        } else {
+            return redirect('/login')->with('error', 'Você precisa estar logado para criar um evento.');
+        }
     }
 
-
-
-
-
-
-    public function show($id)
-    {
-        $event = $this->eventService->getEventById($id);
+    public function show($id) {
+        $event = Event::findOrFail($id); // Isso obtém o evento pelo ID
         return view('events.show', ['event' => $event]);
     }
 
     public function dashboard()
-{
-    $user = auth()->user(); // Obtém o usuário autenticado
-    $events = $this->eventService->getUserEvents($user); // Obtenha os eventos que o usuário criou
-    $eventsAsParticipant = $this->eventService->getUserEventsAsParticipant($user); // Obtenha os eventos que o usuário participa
+    {
+        $user = auth()->user(); // Obtém o usuário autenticado
+        $events = $user->events; // Obtém os eventos que o usuário criou
+        $eventsAsParticipant = $user->eventsAsParticipant; // Obtém os eventos que o usuário participa
 
-    return view('events.dashboard', [
+        return view('events.dashboard', [
         'events' => $events, 
-        'eventasparticipant' => $eventsAsParticipant
-    ]);
+        'eventasparticipant' => $eventsAsParticipant]);
+    
+    }
+    public function destroy($id)
+{
+    $event = Event::findOrFail($id);
+
+    // Remover todos os participantes do evento antes de deletar o evento
+    $event->users()->detach();
+
+    // Agora você pode excluir o evento
+    $event->delete();
+
+    return redirect('/dashboard')->with('msg', 'Evento excluído com sucesso!');
 }
 
-
-    public function destroy($id)
-    {
-        $this->eventService->deleteEvent($id);
-        return redirect('/dashboard')->with('msg', 'Evento excluído com sucesso!');
-    }
-
-    public function edit($id)
-    {
+        
+    public function edit($id){
         $user = auth()->user();
-        $event = $this->eventService->getEventById($id);
-
-        if ($user->id != $event->user_id) {
+        $event= Event::findOrFail($id);
+        $event->date = \Carbon\Carbon::parse($event->date);
+        if($user->id != $event->user_id){
             return redirect('/dashboard');
+            
         }
 
-        return view('events.edit', ['event' => $event]);
+        return view('events.edit',['event'=>$event]);
     }
 
-    public function update(Request $request, $id) // 
-{
-    $this->eventService->updateEvent($id, $request->all()); 
-    return redirect('/dashboard')->with('msg', 'Evento alterado com sucesso!');
-}
+    public function update(Request $request){
+        $data = $request->all();
+
+         if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $requestImage = $request->image;
+            $extension = $requestImage->extension();
+            $imageName = md5($requestImage->getClientOriginalName() . strtotime("now")) . "." . $extension;
+
+            $requestImage->move(public_path('img/events'), $imageName);
+            $data['image'] = $imageName;
+        }
 
 
-    public function joinEvent($id)
-{
-    // Verifica se o usuário está autenticado
-    if (!auth()->check()) {
-        // Redireciona para a página de login se não estiver autenticado
-        return redirect()->route('login')->with('msg', 'Você precisa estar logado para participar de um evento.');
+        Event::findOrFail($request->id)->update($data);
+        return redirect('/dashboard')->with('msg', 'Evento alterado com sucesso!');
+
     }
 
+    public function jointEvent($id)
+    {
     $user = auth()->user();
-    $event = $this->eventService->getEventById($id); // Obtenha o evento pelo ID
+    $event = Event::findOrFail($id);
 
     // Verifica se o usuário já está participando do evento
     if ($user->eventsAsParticipant()->where('event_id', $id)->exists()) {
@@ -116,27 +145,20 @@ class EventController extends Controller
     }
 
     // Se não estiver participando, faz a associação
-    $this->eventService->joinEvent($user, $id); // Chame o método do EventService para juntar-se ao evento
+    $user->eventsAsParticipant()->attach($id);
 
     return redirect('/dashboard')->with('msg', 'Sua presença está confirmada no evento!');
-}
-
+    }
 
 
     public function leaveEvent($id)
-    {
-        $user = auth()->user();
-          
-    if (!$user) {
-        return redirect()->route('login')->with('error', 'Você precisa estar logado para sair do evento.');
-    }
+{
+    $user = auth()->user();
+    $user->eventsAsParticipant()->detach($id); // Remove o evento da lista de participação
 
-    // Chama o método leaveEvent no EventService com os parâmetros corretos
-    $this->eventService->leaveEvent($user, $id);
-    
     return redirect('/dashboard')->with('msg', 'Você saiu do evento com sucesso.');
 }
-    
 
-    
+
+
 }
